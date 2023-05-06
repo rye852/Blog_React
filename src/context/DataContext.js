@@ -1,20 +1,14 @@
-import LayOut from './compannts/LayOut';
-import Home from './pages/Home';
-import About from './pages/About';
-import Missing from './pages/Missing';
-import NewPoste from './pages/NewPoste';
-import PostePage from './pages/PostePage';
-import EditPost from './pages/EditPost';
-import api from './api/Posts';
-import useWindowSize from './hooks/useWindowSize';
-import useAxiosFetch from './hooks/useAxiosFetch';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { createContext, useState, useEffect } from 'react';
+import api from '../api/Posts';
+import useWindowSize from '../hooks/useWindowSize';
+import useAxiosFetch from '../hooks/useAxiosFetch';
 import { format } from 'date-fns';
-import { useState, useEffect, createContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+// import { Routes, Route, useNavigate } from 'react-router-dom';
 
-export const Data = createContext();
+const DataContext = createContext();
 
-function App() {
+export const DataProvider = ({ children }) => {
   const [postes, setPostes] = useState([]);
   const [search, setSearch] = useState('');
   const [searchResault, setSearchResault] = useState([]);
@@ -96,41 +90,13 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <Data.Provider
-        value={{
-          search,
-          setSearch,
-          width,
-          searchResault,
-          fetchErr,
-          isLoading,
-          postTitle,
-          setPostTitle,
-          postBody,
-          setPostBody,
-          handleSubmit,
-          handleDelete,
-          postes,
-          handleEdit,
-          editBody,
-          editTitle,
-          setEditTitle,
-          setEditBody,
-        }}>
-        <Routes>
-          <Route element={<LayOut title="React Blog" />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/newposte" element={<NewPoste />} />
-            <Route path="/:id" element={<PostePage />} />
-            <Route path="editpost/:id" element={<EditPost />} />
-            <Route path="*" element={<Missing />} />
-          </Route>
-        </Routes>
-      </Data.Provider>
-    </div>
+    <DataContext.Provider
+      value={{
+        width,
+      }}>
+      {children}
+    </DataContext.Provider>
   );
-}
+};
 
-export default App;
+export default DataContext;
